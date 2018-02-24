@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  # --------------
+  # registry
+  # --------------
+  discovery:
+    build: ../registry/target
+    ports:
+      - "7000:7000"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  # --------------
+  # zuul proxy
+  # --------------
+  zuul:
+    build: ../proxy/target
+    ports:
+      - "7003:7003"
+    links:
+      - discovery
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  # --------------
+  # ct-user-service
+  # --------------
+  ctuserservice:
+    build: ../ctuserservice/target
+    ports:
+      - "7001:7001"
+    links:
+      - discovery
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  # --------------
+  # ct-file-service
+  # --------------
+  ctfileservice:
+    build: ../ctfileservice/target
+    ports:
+      - "7002:7002"
+    links:
+      - discovery
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+

@@ -1,0 +1,51 @@
+# GLOBAL CONFIGURATION
+spring:
+    # if you want to set a different profile
+    # use environment variable:
+    #
+    # SPRING_PROFILES_ACTIVE=docker
+    profiles.active: local
+    application.name: Zuul
+
+# zuul proxy always exposes 8080 
+server.port: 7003
+
+# zuul routes
+zuul:
+  ignoredServices: '*'
+  routes:
+    # routes for service 'ctuserservice'
+    ctuserservice:
+      path: /ctuserservice/**
+      serviceId: CtUserService
+    # routes for service 'ctfileservice'
+    ctfileservice:
+      path: /ctfileservice/**
+      serviceId: CtFileService
+
+---
+# LOCAL CONFIGURATION
+spring:
+    profiles: local
+      
+      
+eureka.client:
+    # in local mode you have to run your service 
+    # discovery on localhost (you also can run the 
+    # cloud infrastructure on your local docker host)
+    serviceUrl.defaultZone: http://localhost:7000/eureka/
+    # fetch all 5 seconds the delta from the service registry
+    registry-fetch-interval-seconds: 5
+      
+---
+# DOCKER CONFIGURATION
+spring:
+    profiles: docker
+    
+
+eureka.client:
+    # the hostname of your eureka server should be 'discovery'
+    serviceUrl.defaultZone: http://10.2.0.25:7000/eureka/
+    # fetch all 5 seconds the delta from the service registry
+    registry-fetch-interval-seconds: 5
+
